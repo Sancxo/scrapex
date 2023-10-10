@@ -1,4 +1,7 @@
 defmodule Scrapex.JobSpiders.FlySpider do
+  @moduledoc """
+  Spider made to crawl Fly.io job offers at https://fly.io/jobs/ .
+  """
   use Crawly.Spider
 
   @impl Crawly.Spider
