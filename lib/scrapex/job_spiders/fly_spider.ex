@@ -16,8 +16,9 @@ defmodule Scrapex.JobSpiders.FlySpider do
 
     jobs =
       page_body
-      |> Floki.find("section.container div.grid article")
+      |> Floki.find("main section.container div.grid article")
       |> Enum.map(fn article ->
+        # Fly.io doesn't remove old job offers, so we have to check if the job offer has experience requirements or "No positions available at this time" in order to return only open positions.
         job_experience =
           article
           |> Floki.find("dl:nth-of-type(2) dd:not([aria-hidden])")
@@ -27,17 +28,21 @@ defmodule Scrapex.JobSpiders.FlySpider do
           |> Enum.filter(fn job_xp -> job_xp != "" end)
 
         unless List.first(job_experience) == "No positions available at this time" do
-          %{
-            title:
-              article
-              |> Floki.find("dl:first-child > dd:not(.hidden)")
-              |> Floki.text()
-              |> String.split("\n", trim: true)
-              |> List.first()
-              |> String.trim(),
-            experience: job_experience,
-            link: article |> Floki.find("a") |> Floki.attribute("href") |> List.first()
-          }
+          article
+          |> Floki.raw_html()
+
+          # Old map used as value returned, now the function returns raw html but in case we revert to map type this could be useful
+          # %{
+          #   title:
+          #     article
+          #     |> Floki.find("dl:first-child > dd:not(.hidden)")
+          #     |> Floki.text()
+          #     |> String.split("\n", trim: true)
+          #     |> List.first()
+          #     |> String.trim(),
+          #   experience: job_experience,
+          #   url: article |> Floki.find("a") |> Floki.attribute("href") |> List.first()
+          # }
         end
       end)
       |> Enum.filter(&(&1 != nil))
