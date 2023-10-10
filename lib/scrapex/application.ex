@@ -10,6 +10,7 @@ defmodule Scrapex.Application do
     children = [
       # Starts a worker by calling: Scrapex.Worker.start_link(arg)
       # {Scrapex.Worker, arg}
+      Scrapex.SpidersNest
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
