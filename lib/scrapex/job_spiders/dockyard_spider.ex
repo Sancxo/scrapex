@@ -20,6 +20,8 @@ defmodule Scrapex.JobSpiders.DockyardSpider do
       |> Floki.find("main section[aria-labelledby='open-positions']")
       |> Floki.raw_html()
 
-    %Crawly.ParsedItem{:items => [%{jobs: jobs}], :requests => []}
+    digest = :crypto.hash(:sha256, jobs) |> Base.encode16() |> String.downcase()
+
+    %Crawly.ParsedItem{:items => [%{hash: digest, html: jobs}], :requests => []}
   end
 end

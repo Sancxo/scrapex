@@ -20,6 +20,8 @@ defmodule Scrapex.JobSpiders.CuriosumSpider do
       |> Floki.find("main.career div.container div.career-list__container")
       |> Floki.raw_html()
 
-    %Crawly.ParsedItem{:items => [%{jobs: jobs}], :requests => []}
+    digest = :crypto.hash(:sha256, jobs) |> Base.encode16() |> String.downcase()
+
+    %Crawly.ParsedItem{:items => [%{hash: digest, html: jobs}], :requests => []}
   end
 end

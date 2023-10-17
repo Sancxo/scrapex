@@ -27,26 +27,37 @@ defmodule Scrapex.JobSpiders.FlySpider do
           |> Enum.map(&String.trim/1)
           |> Enum.filter(fn job_xp -> job_xp != "" end)
 
-        unless List.first(job_experience) == "No positions available at this time" do
-          article
-          |> Floki.raw_html()
+        unless List.first(job_experience) == "No positions available at this time",
+          do: Floki.raw_html(article)
 
-          # Old map used as value returned, now the function returns raw html but in case we revert to map type this could be useful
-          # %{
-          #   title:
-          #     article
-          #     |> Floki.find("dl:first-child > dd:not(.hidden)")
-          #     |> Floki.text()
-          #     |> String.split("\n", trim: true)
-          #     |> List.first()
-          #     |> String.trim(),
-          #   experience: job_experience,
-          #   url: article |> Floki.find("a") |> Floki.attribute("href") |> List.first()
-          # }
-        end
+        # Old map used as value returned, now the function returns raw html but in case we revert to map type this could be useful
+        # unless List.first(job_experience) == "No positions available at this time" do
+        # %{
+        #   title:
+        #     article
+        #     |> Floki.find("dl:first-child > dd:not(.hidden)")
+        #     |> Floki.text()
+        #     |> String.split("\n", trim: true)
+        #     |> List.first()
+        #     |> String.trim(),
+        #   experience: job_experience,
+        #   url: article |> Floki.find("a") |> Floki.attribute("href") |> List.first()
+        # }
+        # end
       end)
       |> Enum.filter(&(&1 != nil))
 
-    %Crawly.ParsedItem{:items => [%{jobs: jobs}], :requests => []}
+    digest = :crypto.hash(:sha256, jobs) |> Base.encode16() |> String.downcase()
+
+    # open last record file
+    # File.read("/tmp/#{__MODULE__}.jsonl")
+    # |> IO.inspect(label: "File ?")
+    # |> case do
+    #   {:error, :enoent} ->
+    %Crawly.ParsedItem{:items => [%{hash: digest, html: jobs}], :requests => []}
+
+    #   {:ok, json} ->
+    #     json |> IO.inspect(label: "We found a file!")
+    # end
   end
 end
