@@ -6,6 +6,7 @@ config :crawly,
   closespider_itemcount: 10,
   middlewares: [
     Crawly.Middlewares.DomainFilter,
+    Crawly.Middlewares.RobotsTxt,
     Crawly.Middlewares.UniqueRequest,
     {Crawly.Middlewares.UserAgent,
      user_agents: [
@@ -13,8 +14,10 @@ config :crawly,
      ]}
   ],
   pipelines: [
-    # {Crawly.Pipelines.Validate, fields: [:url, :title, :price]},
+    # {Crawly.Pipelines.Validate, fields: [:title, :experience, :url]},
     # {Crawly.Pipelines.DuplicatesFilter, item_id: :title},
+    {Crawly.Pipelines.Validate, fields: [:hash, :html]},
+    {Crawly.Pipelines.DuplicatesFilter, item_id: :hash},
     Crawly.Pipelines.JSONEncoder,
-    {Crawly.Pipelines.WriteToFile, extension: "jsonl", folder: "./tmp", include_timestamp: true}
+    {Crawly.Pipelines.WriteToFile, extension: "jsonl", folder: "./tmp", include_timestamp: false}
   ]
