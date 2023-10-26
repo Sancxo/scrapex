@@ -28,7 +28,21 @@ defmodule Scrapex.JobSpiders.FlySpider do
           |> Enum.filter(fn job_xp -> job_xp != "" end)
 
         unless List.first(job_experience) == "No positions available at this time",
-          do: Floki.raw_html(article)
+          do:
+            article
+            |> Floki.traverse_and_update(fn
+              {"dt", [{"class", "sr-only"}], _children} ->
+                # we remove the text used by screen readers
+                nil
+
+              {"dd", [_classes, {"aria-hidden", "aria-hidden"}], _children} ->
+                # we remove the darkened words to keep only the appropriate experience required
+                nil
+
+              html_tag ->
+                html_tag
+            end)
+            |> Floki.raw_html()
 
         # Old map used as value returned, now the function returns raw html but in case we revert to map type this could be useful
         # unless List.first(job_experience) == "No positions available at this time" do
@@ -46,6 +60,7 @@ defmodule Scrapex.JobSpiders.FlySpider do
         # end
       end)
       |> Enum.filter(&(&1 != nil))
+      |> Enum.join()
 
     digest = :crypto.hash(:sha256, jobs) |> Base.encode16() |> String.downcase()
 
