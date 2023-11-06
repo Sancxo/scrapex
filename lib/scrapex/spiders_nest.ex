@@ -52,7 +52,7 @@ defmodule Scrapex.SpidersNest do
         true ->
           previous_crawl_id = state[spider]
 
-          # we open last and current record files in order to get the recorded hashes
+          # we open last and current record files in order to get the recorded hashes (ets table ???)
           with previous_record <- File.read!("./priv/tmp/#{spider}_#{previous_crawl_id}.jsonl"),
                current_record <- File.read!("./priv/tmp/#{spider}_#{current_crawl_id}.jsonl") do
             [previous_record, current_record] =
@@ -61,6 +61,8 @@ defmodule Scrapex.SpidersNest do
             if previous_record["hash"] == current_record["hash"] do
               # If hashes match, we remove this crawl file and we do nothing
               Logger.info("Hash #{current_record["hash"]}, already exists, we delete this crawl.")
+
+              Process.sleep(2000)
 
               File.rm!("./priv/tmp/#{spider}_#{current_crawl_id}.jsonl")
             else
@@ -88,9 +90,7 @@ defmodule Scrapex.SpidersNest do
           %{"html" => html} =
             File.read!("./priv/tmp/#{spider}_#{current_crawl_id}.jsonl") |> Poison.decode!()
 
-          spider
-          |> Mailer.build_mail(html, :html)
-          |> Mailer.deliver()
+          spider |> Mailer.build_mail(html, :html) |> Mailer.deliver()
       end
 
       Process.send_after(self(), :crawl, @timer)
