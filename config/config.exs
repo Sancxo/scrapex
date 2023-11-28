@@ -1,5 +1,16 @@
 import Config
 
+domain_name = System.get_env("DOMAIN_NAME")
+smtp = "smtp." <> "#{domain_name}"
+
+sender_name = System.get_env("SENDER_NAME")
+
+sender_mail = "#{System.get_env("SENDER_NAME")}@#{System.get_env("DOMAIN_NAME")}"
+
+sender_pwd = System.get_env("SENDER_PWD")
+recipient_name = System.get_env("RECIPIENT_NAME")
+recipient_mail = System.get_env("RECIPIENT_MAIL")
+
 config :crawly,
   closespider_timeout: 1,
   concurrent_requests_per_domain: 1,
@@ -24,24 +35,24 @@ config :swoosh, :api_client, false
 
 config :scrapex, Scrapex.Mailer,
   adapter: Swoosh.Adapters.SMTP,
-  relay: "smtp." <> "#{System.get_env("DOMAIN_NAME")}",
-  username: System.get_env("SENDER_MAIL"),
-  password: System.get_env("SENDER_PWD"),
+  relay: smtp,
+  username: sender_mail,
+  password: sender_pwd,
   ssl: false,
   tls: :always,
   auth: :always,
   port: 587,
   dkim: [
-    s: System.get_env("SENDER_NAME"),
-    d: System.get_env("DOMAIN_NAME"),
-    private_key: {:pem_plain, System.get_env("SSL_PRIVATE_KEY")}
+    s: sender_name,
+    d: domain_name,
+    private_key: {:pem_plain, File.read!("priv/keys/private-key.pem")}
   ],
   retries: 2,
   no_mx_lookups: false
 
 config :scrapex,
-  sender_mail: "#{System.get_env("SENDER_NAME")}@#{System.get_env("DOMAIN_NAME")}",
+  sender_mail: sender_mail,
   recipient: %{
-    mail: System.get_env("RECIPIENT_MAIL"),
-    name: System.get_env("RECIPIENT_NAME")
+    mail: recipient_mail,
+    name: recipient_name
   }
