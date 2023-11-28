@@ -11,6 +11,7 @@ defmodule Scrapex.Application do
       # Starts a worker by calling: Scrapex.Worker.start_link(arg)
       # {Scrapex.Worker, arg}
       {Finch, name: Swoosh.Finch},
+      Scrapex.HashRegistry,
       Scrapex.SpidersNest
     ]
 
