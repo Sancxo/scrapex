@@ -40,7 +40,7 @@ config :scrapex, Scrapex.Mailer,
   no_mx_lookups: false
 
 config :scrapex,
-  sender_mail: System.get_env("SENDER_MAIL"),
+  sender_mail: "#{System.get_env("SENDER_NAME")}@#{System.get_env("DOMAIN_NAME")}",
   recipient: %{
     mail: System.get_env("RECIPIENT_MAIL"),
     name: System.get_env("RECIPIENT_NAME")
