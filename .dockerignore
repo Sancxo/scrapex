@@ -29,7 +29,6 @@ doc
 
 # Temporary files, for example, from tests.
 tmp
-priv
 
 **/.env
 fly.toml
