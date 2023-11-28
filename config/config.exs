@@ -10,24 +10,34 @@ config :crawly,
     Crawly.Middlewares.UniqueRequest,
     {Crawly.Middlewares.UserAgent,
      user_agents: [
-       "[https://simontirant.dev | simon.tirant@gmail.com] Hi, I am looking for an Elixir developper position so I made this web crawler."
+       "[https://simontirant.dev | simon.tirant@gmail.com] Hi, I am looking for an Elixir developper position so I made this job scrapping GenServer."
      ]}
   ],
   pipelines: [
-    # {Crawly.Pipelines.Validate, fields: [:title, :experience, :url]},
-    # {Crawly.Pipelines.DuplicatesFilter, item_id: :title},
     {Crawly.Pipelines.Validate, fields: [:hash, :html]},
-    {Crawly.Pipelines.DuplicatesFilter, item_id: :hash},
     Crawly.Pipelines.JSONEncoder,
     {Crawly.Pipelines.WriteToFile,
      extension: "jsonl", folder: "./priv/tmp", include_timestamp: false}
   ]
 
-config :swoosh, :api_client, Swoosh.ApiClient.Finch
+config :swoosh, :api_client, false
 
 config :scrapex, Scrapex.Mailer,
-  adapter: Swoosh.Adapters.Sendgrid,
-  api_key: System.get_env("SENDGRID_KEY")
+  adapter: Swoosh.Adapters.SMTP,
+  relay: "smtp." <> "#{System.get_env("DOMAIN_NAME")}",
+  username: System.get_env("SENDER_MAIL"),
+  password: System.get_env("SENDER_PWD"),
+  ssl: false,
+  tls: :always,
+  auth: :always,
+  port: 587,
+  dkim: [
+    s: System.get_env("SENDER_NAME"),
+    d: System.get_env("DOMAIN_NAME"),
+    private_key: {:pem_plain, File.read!("priv/keys/private-key.pem")}
+  ],
+  retries: 2,
+  no_mx_lookups: false
 
 config :scrapex,
   sender_mail: System.get_env("SENDER_MAIL"),
