@@ -34,7 +34,7 @@ config :scrapex, Scrapex.Mailer,
   dkim: [
     s: System.get_env("SENDER_NAME"),
     d: System.get_env("DOMAIN_NAME"),
-    private_key: {:pem_plain, File.read!("priv/keys/private-key.pem")}
+    private_key: {:pem_plain, System.get_env("SSL_PRIVATE_KEY")}
   ],
   retries: 2,
   no_mx_lookups: false
