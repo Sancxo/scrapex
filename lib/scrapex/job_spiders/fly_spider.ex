@@ -1,7 +1,5 @@
 defmodule Scrapex.JobSpiders.FlySpider do
-  @moduledoc """
-  Spider made to crawl Fly.io job offers at https://fly.io/jobs/ .
-  """
+  @moduledoc "Spider made to crawl Fly.io job offers at https://fly.io/jobs/."
   use Crawly.Spider
 
   @impl Crawly.Spider
@@ -64,15 +62,6 @@ defmodule Scrapex.JobSpiders.FlySpider do
 
     digest = :crypto.hash(:sha256, jobs) |> Base.encode16() |> String.downcase()
 
-    # open last record file
-    # File.read("/tmp/#{__MODULE__}.jsonl")
-    # |> IO.inspect(label: "File ?")
-    # |> case do
-    #   {:error, :enoent} ->
     %Crawly.ParsedItem{:items => [%{hash: digest, html: jobs}], :requests => []}
-
-    #   {:ok, json} ->
-    #     json |> IO.inspect(label: "We found a file!")
-    # end
   end
 end
