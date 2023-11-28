@@ -1,19 +1,16 @@
 defmodule Scrapex.Mailer do
+  @moduledoc " Mailer module used by spiders to send their job reports by mail."
   use Swoosh.Mailer, otp_app: :scrapex
 
   import Swoosh.Email
 
-  @typedoc """
-  The type of data sent by the email (html or plain text)
-  """
+  @typedoc "The type of data sent by the email (html or plain text)."
   @type mail_type() :: :html | :text
 
   @recipient Application.compile_env(:scrapex, :recipient)
   @sender_mail Application.compile_env(:scrapex, :sender_mail)
 
-  @doc """
-  Build an email form the data (html or text) the Spider crawled
-  """
+  @doc "Build an email from the data (html or text) the Spider crawled."
   @spec build_mail(String.t(), binary(), mail_type()) :: any
   def build_mail(spider_name, html_data, :html) do
     spider_name = spider_name |> String.trim_leading("Scrapex.JobSpiders.")
