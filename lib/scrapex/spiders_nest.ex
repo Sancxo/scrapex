@@ -7,6 +7,7 @@ defmodule Scrapex.SpidersNest do
 
   @timer 24 * 60 * 60 * 1000
   @spiders [
+    Scrapex.JobSpiders.AppsignalSpider,
     Scrapex.JobSpiders.CuriosumSpider,
     Scrapex.JobSpiders.DockyardSpider,
     Scrapex.JobSpiders.FeltSpider,
