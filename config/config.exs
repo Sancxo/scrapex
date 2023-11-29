@@ -5,7 +5,7 @@ smtp = "smtp." <> "#{domain_name}"
 
 sender_name = System.get_env("SENDER_NAME")
 
-sender_mail = "#{System.get_env("SENDER_NAME")}@#{System.get_env("DOMAIN_NAME")}"
+sender_mail = "#{sender_name}@#{domain_name}"
 
 sender_pwd = System.get_env("SENDER_PWD")
 recipient_name = System.get_env("RECIPIENT_NAME")
