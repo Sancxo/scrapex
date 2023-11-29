@@ -7,9 +7,10 @@ defmodule Scrapex.SpidersNest do
 
   @timer 24 * 60 * 60 * 1000
   @spiders [
-    Scrapex.JobSpiders.FlySpider,
+    Scrapex.JobSpiders.CuriosumSpider,
     Scrapex.JobSpiders.DockyardSpider,
-    Scrapex.JobSpiders.CuriosumSpider
+    Scrapex.JobSpiders.FeltSpider,
+    Scrapex.JobSpiders.FlySpider
   ]
 
   def start_link(_opts), do: GenServer.start_link(__MODULE__, %{})
