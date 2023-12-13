@@ -36,7 +36,7 @@ defmodule Scrapex.JobSpiders.AppsignalSpider do
         end
       end)
 
-    header = page_body |> Floki.find("header.c-container") |> Floki.raw_html()
+    header = page_body |> Floki.find("div.c-container header") |> Floki.raw_html()
 
     data = [header | jobs] |> Enum.join()
 
