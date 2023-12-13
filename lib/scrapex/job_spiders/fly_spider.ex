@@ -58,10 +58,13 @@ defmodule Scrapex.JobSpiders.FlySpider do
         # end
       end)
       |> Enum.filter(&(&1 != nil))
-      |> Enum.join()
 
-    digest = :crypto.hash(:sha256, jobs) |> Base.encode16() |> String.downcase()
+    header = page_body |> Floki.find("main header") |> Floki.raw_html()
 
-    %Crawly.ParsedItem{:items => [%{hash: digest, html: jobs}], :requests => []}
+    data = [header | jobs] |> Enum.join()
+
+    digest = :crypto.hash(:sha256, data) |> Base.encode16() |> String.downcase()
+
+    %Crawly.ParsedItem{:items => [%{hash: digest, html: data}], :requests => []}
   end
 end
